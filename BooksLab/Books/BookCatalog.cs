@@ -55,11 +55,11 @@ internal class BookCatalog : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        /*optionsBuilder.UseMySql(
-            "server=localhost;user=root;password=12345678;database=usersdb5;", 
+        optionsBuilder.UseMySql(
+            "server=localhost;user=user;password=password;database=books;", 
             new MySqlServerVersion(new Version(8, 0, 11))
-        );*/
-        optionsBuilder.UseSqlite("Data Source=book.db");
+        );
+        //optionsBuilder.UseSqlite("Data Source=book.db");
     }
     
     public override int SaveChanges()
