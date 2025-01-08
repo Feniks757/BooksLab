@@ -13,10 +13,12 @@ internal class KeywordSearch : IBookSearch
             .Select(keyword => keyword.Trim())
             .ToArray();
 
-        return catalog.Books.Where(book =>
-                keywords.Any(keyword => book.Annotation.Contains(keyword, StringComparison.OrdinalIgnoreCase) ||
+        return catalog.Books
+            .AsEnumerable()
+            .Where(book =>
+                keywords.Any(keyword => book.Annotation.ToLower().Contains(keyword.ToLower()) ||
                                         book.Genres.Any(genre =>
-                                            genre.Contains(keyword, StringComparison.OrdinalIgnoreCase))))
+                                            genre.ToLower().Contains(keyword.ToLower()))))
             .ToList();
     }
 }

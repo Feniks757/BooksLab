@@ -8,7 +8,8 @@ internal class TitleSearch : IBookSearch
     public List<Book> Search(BookCatalog catalog, string query)
     {
         return catalog.Books
-                   .Where(book => book.Title.Contains(query, StringComparison.OrdinalIgnoreCase))
+                    .AsEnumerable()
+                    .Where(book => book.Title.ToLower().Contains(query.ToLower()))
                    .ToList();
     }
 }

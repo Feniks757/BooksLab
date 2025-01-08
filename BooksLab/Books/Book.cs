@@ -2,14 +2,19 @@ namespace BooksLab.Books;
 
 public class Book
 {
-    public readonly string Title;        // название
-    public readonly string Author;       // автор
-    public readonly List<string> Genres; // жанры
-    public readonly int PublicationYear; // год публикации
-    public readonly string Annotation;   // аннотация
-    public readonly string ISBN;         // ISBN
-    public readonly int UserId;          // Идентификатор пользователя
-
+    public int Id { get; set; }          // Первичный ключ
+    public  string Title { get; set; }        // название
+    public  string Author { get; set; }      // автор
+    public  List<string> Genres  { get; set; } // жанры
+    public  int PublicationYear  { get; set; } // год публикации
+    public  string Annotation { get; set; }   // аннотация
+    public  string ISBN  { get; set; }         // ISBN
+    public  int UserId  { get; set; }          // Идентификатор пользователя
+    
+    public Book()
+    {
+        Genres = new List<string>();
+    }
     /* Конструктор класса Book
     Принимает в себя название, автора, жанры, дату публикации, аннотации,
     ISBN и идентификатор пользователя */

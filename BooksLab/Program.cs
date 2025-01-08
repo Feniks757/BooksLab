@@ -25,13 +25,13 @@ class Program
             // Инициализация BookLoader и BookSaver
             IBookLoader bookLoader = new BookLoader();
             IBookSaver bookSaver = new BookSaver();
-            BookCatalog userCatalog = new(userId);
-            BookCatalog otherUserCatalog = new(userId, false);
+           
+            //BookCatalog otherUserCatalog = new(userId, false);
 
 
 
-            await userCatalog.LoadBooksFromFileAsync(); // Загружаем книги из файла
-            Task otheruser = otherUserCatalog.LoadBooksFromFileAsync(); // Загружаем книги из файла
+            //await userCatalog.LoadBooksFromFileAsync(); // Загружаем книги из файла
+            //Task otheruser = otherUserCatalog.LoadBooksFromFileAsync(); // Загружаем книги из файла
 
             int choice;
             do
@@ -39,59 +39,64 @@ class Program
                 MenusManager.MainMenu(userId);
                 choice = Inp.Input(1, 6);
 
-                switch (choice)
+                using (BookCatalog userCatalog = new(userId))
                 {
-                    case 1:
-                        // Добавление книги
-                        AddBookAsync(userCatalog, userId);
-                        break;
+                    switch (choice)
+                    {
+                        case 1:
+                            // Добавление книги
+                            AddBookAsync(userCatalog, userId);
+                            break;
 
-                    case 2:
-                        Console.Write("Введите название книги: ");
-                        string title = Console.ReadLine()!;
-                        IBookSearch titleSearch = new TitleSearch();
-                        var booksByTitle = titleSearch.Search(userCatalog, title);
-                        Display.ShowBooks(booksByTitle);
-                        break;
+                        case 2:
+                            Console.Write("Введите название книги: ");
+                            string title = Console.ReadLine()!;
+                            IBookSearch titleSearch = new TitleSearch();
+                            var booksByTitle = titleSearch.Search(userCatalog, title);
+                            Display.ShowBooks(booksByTitle);
+                            break;
 
-                    case 3:
-                        Console.Write("Введите имя автора: ");
-                        string author = Console.ReadLine()!;
-                        IBookSearch authorSearch = new AuthorSearch();
-                        var booksByAuthor = authorSearch.Search(userCatalog, author);
-                        Display.ShowBooks(booksByAuthor);
-                        break;
+                        case 3:
+                            Console.Write("Введите имя автора: ");
+                            string author = Console.ReadLine()!;
+                            IBookSearch authorSearch = new AuthorSearch();
+                            var booksByAuthor = authorSearch.Search(userCatalog, author);
+                            Display.ShowBooks(booksByAuthor);
+                            break;
 
-                    case 4:
-                        Console.Write("Введите ISBN: ");
-                        string isbn = Console.ReadLine()!;
-                        IBookSearch isbnSearch = new ISBNBookSearch();
-                        var booksByIsbn = isbnSearch.Search(userCatalog, isbn);
-                        Display.ShowBooks(booksByIsbn);
-                        break;
-                    case 5:
-                        Console.Write("Введите ключевые слова (через запятую): ");
-                        string keywordQuery = Console.ReadLine()!;
-                        IBookSearch keywordSearch = new KeywordSearch();
-                        var booksByKeywords = keywordSearch.Search(userCatalog, keywordQuery);
-                        Display.ShowBooks(booksByKeywords);
-                        break;
+                        case 4:
+                            Console.Write("Введите ISBN: ");
+                            string isbn = Console.ReadLine()!;
+                            IBookSearch isbnSearch = new ISBNBookSearch();
+                            var booksByIsbn = isbnSearch.Search(userCatalog, isbn);
+                            Display.ShowBooks(booksByIsbn);
+                            break;
+                        case 5:
+                            Console.Write("Введите ключевые слова (через запятую): ");
+                            string keywordQuery = Console.ReadLine()!;
+                            IBookSearch keywordSearch = new KeywordSearch();
+                            var booksByKeywords = keywordSearch.Search(userCatalog, keywordQuery);
+                            Display.ShowBooks(booksByKeywords);
+                            break;
+                    }
+
+                    if (choice != 6)
+                    {
+                        Inp.Pause();
+                    }
                 }
-
-                if (choice != 6)
-                {
-                    Inp.Pause();
-                }
+               
             } while (choice != 6);
 
-            await otheruser;
+            /*await otheruser;
             userCatalog += otherUserCatalog;
-            await userCatalog.SaveBooksToFileAsync(); // Сохранение изменений в файл
+            await userCatalog.SaveBooksToFileAsync(); // Сохранение изменений в файл*/
             Console.WriteLine("До свидания!");
         }
-        catch (Exception)
+        catch (Exception e)
         {
             Console.WriteLine("Произошло исключение.");
+            Console.WriteLine(e.Message);
         }
     }
 

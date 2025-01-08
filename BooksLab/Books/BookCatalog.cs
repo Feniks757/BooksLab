@@ -1,59 +1,70 @@
+//using BooksLab.DataBase;
 using BooksLab.Output;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace BooksLab.Books;
 using BooksLab.Interface;
 
 
-internal class BookCatalog
+internal class BookCatalog : DbContext
 {
     public int UserId { get; }
 
     private bool CurrentUser { get; }
 
-    public List<Book> Books { get; private set; }
+    public DbSet<Book> Books => Set<Book>();
+
     private readonly IBookLoader _bookLoader;
     private readonly IBookSaver _bookSaver;
 
     public BookCatalog()
     {
-        Books = new();
+        Database.EnsureCreated();
         _bookLoader = new BookLoader();
         _bookSaver = new BookSaver();
-    }
+        
+    } 
 
-    public BookCatalog(int id) : this(id, true) { }
+    public BookCatalog(int id) : this(id, true)
+    {
+        Database.EnsureCreated();
+    }
 
     public BookCatalog(int id, bool currentUser)
     {
+        Database.EnsureCreated();
         UserId = id;
         CurrentUser = currentUser;
-        Books = new List<Book>();
+        //Books = new List<Book>();
         _bookLoader = new BookLoader();
         _bookSaver = new BookSaver();
     }
 
     // Асинхронная загрузка книг из файла, с фильтрацией по пользователю
-    public async Task LoadBooksFromFileAsync()
+    /*public async Task LoadBooksFromFileAsync()
     {
         Books = await _bookLoader.LoadAsync(UserId, CurrentUser); // Загружаем книги через BookLoader
-    }
+    }*/
 
     // Асинхронное сохранение книг в файл
-    public async Task SaveBooksToFileAsync()
+    /*public async Task SaveBooksToFileAsync()
     {
         await _bookSaver.SaveAsync(Books); // Сохраняем книги через BookSaver
-    }
+    }*/
 
-    public static BookCatalog operator +(BookCatalog catalog1, BookCatalog catalog2)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (catalog1 == null) return catalog2;
-        if (catalog2 == null) return catalog1;
-
-        BookCatalog combinedCatalog = new();
-        combinedCatalog.Books.AddRange(catalog1.Books);
-        combinedCatalog.Books.AddRange(catalog2.Books);
-
-        return combinedCatalog;
+        /*optionsBuilder.UseMySql(
+            "server=localhost;user=root;password=12345678;database=usersdb5;", 
+            new MySqlServerVersion(new Version(8, 0, 11))
+        );*/
+        optionsBuilder.UseSqlite("Data Source=book.db");
+    }
+    
+    public override int SaveChanges()
+    {
+        return base.SaveChanges();
     }
 
     // Прочие методы поиска книг
@@ -80,6 +91,8 @@ internal class BookCatalog
     public void AddBook(Book book)
     {
         Books.Add(book);
+        SaveChanges();
+        //Books.Add(book);
         Console.WriteLine("Книга добавлена в каталог!");
     }
 }
