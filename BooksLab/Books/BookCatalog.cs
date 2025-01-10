@@ -13,40 +13,29 @@ internal class BookCatalog : DbContext
 
     private bool CurrentUser { get; }
 
+    //Set через который происходит взаимодействие с БД
     public DbSet<Book> Books => Set<Book>();
 
-    private readonly IBookLoader _bookLoader;
-    private readonly IBookSaver _bookSaver;
+    public BookCatalog() => Database.EnsureCreated();
 
-    public BookCatalog()
-    {
-        Database.EnsureCreated();
-        _bookLoader = new BookLoader();
-        _bookSaver = new BookSaver();
-        
-    } 
-
-    public BookCatalog(int id) : this(id, true)
-    {
-        Database.EnsureCreated();
-    }
+    public BookCatalog(int id) : this(id, true) =>  Database.EnsureCreated();
 
     public BookCatalog(int id, bool currentUser)
     {
         Database.EnsureCreated();
         UserId = id;
         CurrentUser = currentUser;
-        //Books = new List<Book>();
-        _bookLoader = new BookLoader();
-        _bookSaver = new BookSaver();
     }
 
+    //настройка Базы данных
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        //MYSQL
         optionsBuilder.UseMySql(
             "server=localhost;user=user;password=password;database=books;", 
             new MySqlServerVersion(new Version(8, 0, 11))
         );
+        //SQLite
         //optionsBuilder.UseSqlite("Data Source=book.db");
     }
     
@@ -71,6 +60,7 @@ internal class BookCatalog : DbContext
         return await Task.Run(() => Books.Where(b => b.Annotation.Contains(string.Join(" ", keywords), StringComparison.OrdinalIgnoreCase)));
     }
 
+    //синхронное добавление книги в БД
     public void AddBook(Book book)
     {
         Books.Add(book);
@@ -78,6 +68,7 @@ internal class BookCatalog : DbContext
         Console.WriteLine("Книга добавлена в каталог!");
     }
     
+    //Ассинхронное добавление книги в БД
     public async void AddBookAcync(Book book)
     {
         await Books.AddAsync(book);

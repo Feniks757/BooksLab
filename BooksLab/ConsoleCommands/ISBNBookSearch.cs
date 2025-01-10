@@ -6,10 +6,13 @@ namespace BooksLab.ConsoleCommands;
 
 internal class ISBNBookSearch : IBookSearch
 {
-    public async Task<List<Book>> Search(BookCatalog catalog, string query)
+    public async Task<List<Book>> SearchAsync(int userId, string query)
     {
-        return await catalog.Books
-                   .Where(book => book.ISBN.ToLower().Equals(query.ToLower()))
-                   .ToListAsync();
+        await using (BookCatalog catalog = new(userId))
+        {
+            return await catalog.Books
+                .Where(book => book.ISBN.ToLower().Equals(query.ToLower()))
+                .ToListAsync();
+        }
     }
 }

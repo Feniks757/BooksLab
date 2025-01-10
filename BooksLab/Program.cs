@@ -12,27 +12,6 @@ class Program
 {
     public static void Main(string[] args)
     {
-        /*var _books = new List<Book>
-        {
-            new Book("Title1", "Author1", new List<string> { "Genre1" }, 2020, "Annotation1", "ISBN1", 222),
-            new Book("Title2", "Author2", new List<string> { "Genre2" }, 2021, "Annotation2", "ISBN2", 222),
-            new Book("Title3", "Author3", new List<string> { "Genre3" }, 2022, "Annotation3", "ISBN3", 222)
-        };
-
-        using (var _bookCatalog = new BookCatalog())
-        {
-            var isbnsToRemove = _books
-                .Select(b => b.ISBN)
-                .ToHashSet();
-            var removeBooks = _bookCatalog.Books.AsEnumerable().Where(b => isbnsToRemove.Contains(b.ISBN)).ToList();
-            foreach (var book in removeBooks)
-            {
-                _bookCatalog.Books.Remove(book);
-            }
-            ;
-            _bookCatalog.SaveChanges();
-        }*/
-
         try
         {
             Console.WriteLine("Введите ваш идентификатор пользователя: ");
@@ -49,44 +28,43 @@ class Program
                 MenusManager.MainMenu(userId);
                 choice = Inp.Input(1, 6);
 
-                using (BookCatalog userCatalog = new(userId))
-                {
+                
                     switch (choice)
                     {
                         case 1:
                             // Добавление книги
-                            AddBookAsync(userCatalog, userId);
+                            AddBookAsync(userId);
                             break;
 
                         case 2:
                             Console.Write("Введите название книги: ");
                             string title = Console.ReadLine()!;
                             IBookSearch titleSearch = new TitleSearch();
-                            var booksByTitle = titleSearch.Search(userCatalog, title);
-                            Display.ShowBooksAsync(booksByTitle);
+                            var booksByTitle = titleSearch.SearchAsync(userId, title);
+                            Display.ShowBooks(booksByTitle);
                             break;
 
                         case 3:
                             Console.Write("Введите имя автора: ");
                             string author = Console.ReadLine()!;
                             IBookSearch authorSearch = new AuthorSearch();
-                            var booksByAuthor = authorSearch.Search(userCatalog, author);
-                            Display.ShowBooks(booksByAuthor.Result);
+                            var booksByAuthor = authorSearch.SearchAsync(userId, author);
+                            Display.ShowBooks(booksByAuthor);
                             break;
 
                         case 4:
                             Console.Write("Введите ISBN: ");
                             string isbn = Console.ReadLine()!;
                             IBookSearch isbnSearch = new ISBNBookSearch();
-                            var booksByIsbn = isbnSearch.Search(userCatalog, isbn);
-                            Display.ShowBooks(booksByIsbn.Result);
+                            var booksByIsbn = isbnSearch.SearchAsync(userId, isbn);
+                            Display.ShowBooks(booksByIsbn);
                             break;
                         case 5:
                             Console.Write("Введите ключевые слова (через запятую): ");
                             string keywordQuery = Console.ReadLine()!;
                             IBookSearch keywordSearch = new KeywordSearch();
-                            var booksByKeywords = keywordSearch.Search(userCatalog, keywordQuery);
-                            Display.ShowBooksAsync(booksByKeywords);
+                            var booksByKeywords = keywordSearch.SearchAsync(userId, keywordQuery);
+                            Display.ShowBooks(booksByKeywords);
                             break;
                     }
 
@@ -94,7 +72,7 @@ class Program
                     {
                         Inp.Pause();
                     }
-                }
+                
                
             } while (choice != 6);
             
@@ -107,7 +85,7 @@ class Program
         }
     }
 
-    private static async void AddBookAsync(BookCatalog catalog, int userId)
+    private static async void AddBookAsync(int userId)
     {
 
         Console.Write("Введите название книги: ");
@@ -159,6 +137,9 @@ class Program
         }
 
         Book book = new(title, author, genres, publicationYear, annotation, isbn, userId);
-        catalog.AddBookAcync(book);
+        using (BookCatalog catalog = new(userId))
+        {
+            catalog.AddBookAcync(book);
+        }
     }
 }

@@ -34,4 +34,22 @@ public class Book
     {
         return $"{Title}, {Author}, {string.Join(", ", Genres)}, {PublicationYear}, ISBN: {ISBN}";
     }
+    
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+            return false;
+
+        var book = (Book)obj;
+        return Title == book.Title &&
+               Author == book.Author &&
+               Genres == book.Genres &&
+               PublicationYear == book.PublicationYear &&
+               ISBN == book.ISBN;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Title, Author, Genres, PublicationYear, ISBN);
+    }
 }

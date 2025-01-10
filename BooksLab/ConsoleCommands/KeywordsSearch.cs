@@ -8,13 +8,17 @@ internal class KeywordSearch : IBookSearch
 {
     //private IBookSearch _bookSearchImplementation;
 
-    public async Task<List<Book>> Search(BookCatalog catalog, string query)
+    public async Task<List<Book>> SearchAsync(int userId, string query)
     {
         string[] keywords = query.Split(',')
             .Select(keyword => keyword.Trim().ToLower())
             .ToArray();
+        List<Book> books;
         
-        var books = await catalog.Books.ToListAsync();
+        await using(BookCatalog catalog = new(userId))
+        {
+            books = await catalog.Books.ToListAsync();
+        }
 
         var filteredBooks = books
             .Where(book =>
