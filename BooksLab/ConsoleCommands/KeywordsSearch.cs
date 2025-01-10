@@ -18,10 +18,10 @@ internal class KeywordSearch : IBookSearch
 
         var filteredBooks = books
             .Where(book =>
-                keywords.Any(keyword => book.Annotation.Contains(keyword) ||
-                                        book.Genres.Any(genre => genre.Contains(keyword))))
+                keywords.Any(keyword => book.Annotation.Contains(keyword.ToLower()) ||
+                                        book.Genres.Any(genre => genre.ToLower().Contains(keyword))))
             .ToList();
-
+ 
         return filteredBooks;
     }
 }

@@ -12,6 +12,27 @@ class Program
 {
     public static void Main(string[] args)
     {
+        /*var _books = new List<Book>
+        {
+            new Book("Title1", "Author1", new List<string> { "Genre1" }, 2020, "Annotation1", "ISBN1", 222),
+            new Book("Title2", "Author2", new List<string> { "Genre2" }, 2021, "Annotation2", "ISBN2", 222),
+            new Book("Title3", "Author3", new List<string> { "Genre3" }, 2022, "Annotation3", "ISBN3", 222)
+        };
+
+        using (var _bookCatalog = new BookCatalog())
+        {
+            var isbnsToRemove = _books
+                .Select(b => b.ISBN)
+                .ToHashSet();
+            var removeBooks = _bookCatalog.Books.AsEnumerable().Where(b => isbnsToRemove.Contains(b.ISBN)).ToList();
+            foreach (var book in removeBooks)
+            {
+                _bookCatalog.Books.Remove(book);
+            }
+            ;
+            _bookCatalog.SaveChanges();
+        }*/
+
         try
         {
             Console.WriteLine("Введите ваш идентификатор пользователя: ");
