@@ -10,7 +10,7 @@ namespace BooksLab;
 
 class Program
 {
-    public static async Task Main(string[] args)
+    public static void Main(string[] args)
     {
         try
         {
@@ -21,17 +21,6 @@ class Program
             {
                 Console.WriteLine("Неверный ввод. Пожалуйста, введите числовой идентификатор.");
             }
-
-            // Инициализация BookLoader и BookSaver
-            IBookLoader bookLoader = new BookLoader();
-            IBookSaver bookSaver = new BookSaver();
-           
-            //BookCatalog otherUserCatalog = new(userId, false);
-
-
-
-            //await userCatalog.LoadBooksFromFileAsync(); // Загружаем книги из файла
-            //Task otheruser = otherUserCatalog.LoadBooksFromFileAsync(); // Загружаем книги из файла
 
             int choice;
             do
@@ -53,7 +42,7 @@ class Program
                             string title = Console.ReadLine()!;
                             IBookSearch titleSearch = new TitleSearch();
                             var booksByTitle = titleSearch.Search(userCatalog, title);
-                            Display.ShowBooks(booksByTitle);
+                            Display.ShowBooksAsync(booksByTitle);
                             break;
 
                         case 3:
@@ -61,7 +50,7 @@ class Program
                             string author = Console.ReadLine()!;
                             IBookSearch authorSearch = new AuthorSearch();
                             var booksByAuthor = authorSearch.Search(userCatalog, author);
-                            Display.ShowBooks(booksByAuthor);
+                            Display.ShowBooks(booksByAuthor.Result);
                             break;
 
                         case 4:
@@ -69,14 +58,14 @@ class Program
                             string isbn = Console.ReadLine()!;
                             IBookSearch isbnSearch = new ISBNBookSearch();
                             var booksByIsbn = isbnSearch.Search(userCatalog, isbn);
-                            Display.ShowBooks(booksByIsbn);
+                            Display.ShowBooks(booksByIsbn.Result);
                             break;
                         case 5:
                             Console.Write("Введите ключевые слова (через запятую): ");
                             string keywordQuery = Console.ReadLine()!;
                             IBookSearch keywordSearch = new KeywordSearch();
                             var booksByKeywords = keywordSearch.Search(userCatalog, keywordQuery);
-                            Display.ShowBooks(booksByKeywords);
+                            Display.ShowBooksAsync(booksByKeywords);
                             break;
                     }
 
@@ -87,10 +76,7 @@ class Program
                 }
                
             } while (choice != 6);
-
-            /*await otheruser;
-            userCatalog += otherUserCatalog;
-            await userCatalog.SaveBooksToFileAsync(); // Сохранение изменений в файл*/
+            
             Console.WriteLine("До свидания!");
         }
         catch (Exception e)
@@ -100,7 +86,7 @@ class Program
         }
     }
 
-    private static void AddBookAsync(BookCatalog catalog, int userId)
+    private static async void AddBookAsync(BookCatalog catalog, int userId)
     {
 
         Console.Write("Введите название книги: ");
@@ -152,6 +138,6 @@ class Program
         }
 
         Book book = new(title, author, genres, publicationYear, annotation, isbn, userId);
-        catalog.AddBook(book);
+        catalog.AddBookAcync(book);
     }
 }

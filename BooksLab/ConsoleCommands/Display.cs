@@ -17,4 +17,19 @@ internal static class Display
             Console.WriteLine(book);
         }
     }
+
+    public static void ShowBooksAsync(Task<List<Book>> books)
+    {
+        books.Wait();
+        if (books.Result.Count == 0)
+        {
+            Console.WriteLine("Книги не найдены.");
+            return;
+        }
+
+        foreach (var book in books.Result)
+        {
+            Console.WriteLine(book);
+        }
+    }
 }

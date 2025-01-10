@@ -1,15 +1,16 @@
 ﻿using BooksLab.Books;
 using BooksLab.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace BooksLab.ConsoleCommands;
 
 internal class TitleSearch : IBookSearch
 {
-    public List<Book> Search(BookCatalog catalog, string query)
+    public async Task<List<Book>> Search(BookCatalog catalog, string query)
     {
-        return catalog.Books
-                    .AsEnumerable()
+        return await catalog.Books
+                    .AsQueryable()
                     .Where(book => book.Title.ToLower().Contains(query.ToLower()))
-                   .ToList();
+                    .ToListAsync();
     }
 }
