@@ -69,10 +69,11 @@ internal class BookCatalog : DbContext
     }
     
     //Ассинхронное добавление книги в БД
-    public async void AddBookAcync(Book book)
+    public async Task<Book> AddBookAcync(Book book)
     {
         await Books.AddAsync(book);
         await SaveChangesAsync();
         Console.WriteLine("Книга добавлена в каталог!");
+        return book;
     }
 }

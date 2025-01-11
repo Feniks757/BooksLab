@@ -137,9 +137,9 @@ class Program
         }
 
         Book book = new(title, author, genres, publicationYear, annotation, isbn, userId);
-        using (BookCatalog catalog = new(userId))
+        await using(BookCatalog catalog = new(userId))
         {
-            catalog.AddBookAcync(book);
+            await catalog.AddBookAcync(book);
         }
     }
 }
