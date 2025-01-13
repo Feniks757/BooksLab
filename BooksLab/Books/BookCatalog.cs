@@ -40,25 +40,31 @@ internal class BookCatalog : DbContext
     }
     
     // Прочие методы поиска книг
+    /*
     public async Task<IEnumerable<Book>> FindBooksByTitleAsync(string title)
     {
+        ?
         return await Task.Run(() => Books.Where(b => b.Title.Contains(title, StringComparison.OrdinalIgnoreCase)));
     }
 
     public async Task<IEnumerable<Book>> FindBooksByAuthorAsync(string author)
     {
+        ?
         return await Task.Run(() => Books.Where(b => b.Author.Contains(author, StringComparison.OrdinalIgnoreCase)));
     }
 
     public async Task<Book> FindBookByISBNAsync(string isbn)
     {
+        ?
         return await Task.Run(() => Books.FirstOrDefault(b => b.ISBN == isbn));
     }
 
     public async Task<IEnumerable<Book>> FindBooksByKeywordsAsync(string[] keywords)
     {
+        ?
         return await Task.Run(() => Books.Where(b => b.Annotation.Contains(string.Join(" ", keywords), StringComparison.OrdinalIgnoreCase)));
     }
+    */
 
     //синхронное добавление книги в БД
     public void AddBook(Book book)
@@ -69,10 +75,9 @@ internal class BookCatalog : DbContext
     }
     
     //Ассинхронное добавление книги в БД
-    public async Task<Book> AddBookAcync(Book book)
+    public async Task<Book> AddBookAsync(Book book)
     {
-        await Books.AddAsync(book);
-        await SaveChangesAsync();
+        await Books.AddAsync(book); 
         Console.WriteLine("Книга добавлена в каталог!");
         return book;
     }

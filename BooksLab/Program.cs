@@ -39,31 +39,31 @@ class Program
                         case 2:
                             Console.Write("Введите название книги: ");
                             string title = Console.ReadLine()!;
-                            IBookSearch titleSearch = new TitleSearch();
-                            var booksByTitle = titleSearch.SearchAsync(userId, title);
+                            IBookSearch titleSearch = new BookSearch();
+                            var booksByTitle = titleSearch.SearchAsync(userId, title, (Book book) => book.Title);
                             Display.ShowBooks(booksByTitle);
                             break;
 
                         case 3:
                             Console.Write("Введите имя автора: ");
                             string author = Console.ReadLine()!;
-                            IBookSearch authorSearch = new AuthorSearch();
-                            var booksByAuthor = authorSearch.SearchAsync(userId, author);
+                            IBookSearch authorSearch = new BookSearch();
+                            var booksByAuthor = authorSearch.SearchAsync(userId, author, (Book book) => book.Author);
                             Display.ShowBooks(booksByAuthor);
                             break;
 
                         case 4:
                             Console.Write("Введите ISBN: ");
                             string isbn = Console.ReadLine()!;
-                            IBookSearch isbnSearch = new ISBNBookSearch();
-                            var booksByIsbn = isbnSearch.SearchAsync(userId, isbn);
+                            IBookSearch isbnSearch = new BookSearch();
+                            var booksByIsbn = isbnSearch.SearchAsync(userId, isbn, (Book book) => book.ISBN);
                             Display.ShowBooks(booksByIsbn);
                             break;
                         case 5:
                             Console.Write("Введите ключевые слова (через запятую): ");
                             string keywordQuery = Console.ReadLine()!;
                             IBookSearch keywordSearch = new KeywordSearch();
-                            var booksByKeywords = keywordSearch.SearchAsync(userId, keywordQuery);
+                            var booksByKeywords = keywordSearch.SearchAsync(userId, keywordQuery, (Book book) => "");
                             Display.ShowBooks(booksByKeywords);
                             break;
                     }
@@ -139,7 +139,7 @@ class Program
         Book book = new(title, author, genres, publicationYear, annotation, isbn, userId);
         await using(BookCatalog catalog = new(userId))
         {
-            await catalog.AddBookAcync(book);
+            await catalog.AddBookAsync(book);
         }
     }
 }
