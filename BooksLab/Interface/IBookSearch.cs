@@ -2,7 +2,7 @@
 
 using BooksLab.Books;
 
-internal interface IBookSearch
+public interface IBookSearch
 {
      public Task<List<Book>> SearchAsync(int userId, string query, Func<Book, string> field);
      

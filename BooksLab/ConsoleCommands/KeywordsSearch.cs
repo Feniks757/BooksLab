@@ -16,9 +16,9 @@ internal class KeywordSearch : IBookSearch
         List<Book> books;
         
         
-        await using (BookCatalog catalog = new(userId))
+        await using (BookContext context = new(userId))
         {
-            return catalog.Books
+            return context.Books
                 .AsEnumerable() //??
                 .Where(book =>
                     keywords.Any(keyword => book.Annotation.Contains(keyword) ||

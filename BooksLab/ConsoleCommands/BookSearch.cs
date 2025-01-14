@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace BooksLab.ConsoleCommands
 {
-    internal class BookSearch : IBookSearch
+    public class BookSearch : IBookSearch
     {
         private IBookSearch _bookSearchImplementation;
 
         public async Task<List<Book>> SearchAsync(int userId, string query, Func<Book, string> field)
         {
-            await using (BookCatalog catalog = new(userId))
+            await using (BookContext context = new(userId))
             {
-                return catalog.Books.AsEnumerable().Where(book => field(book).ToLower().Contains(query.ToLower())).ToList();
+                return context.Books.AsEnumerable().Where(book => field(book).ToLower().Contains(query.ToLower())).ToList();
             }
         }
 

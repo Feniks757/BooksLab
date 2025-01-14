@@ -4,6 +4,8 @@ using BooksLab.Books;
 using BooksLab.ConsoleCommands;
 using BooksLab.Interface;
 using BooksLab.Storage;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 
 namespace BooksLab;
@@ -12,6 +14,17 @@ class Program
 {
     public static void Main(string[] args)
     {
+       
+        var builder = WebApplication.CreateBuilder(args);
+        Startup startup = new Startup(builder.Configuration);
+        startup.ConfigureServices(builder.Services);
+        var app = builder.Build();
+        startup.Configure(app);
+        
+        app.MapGet("/", () => "Hello World!");
+
+        app.Run();
+        /*
         try
         {
             Console.WriteLine("Введите ваш идентификатор пользователя: ");
@@ -82,7 +95,7 @@ class Program
         {
             Console.WriteLine("Произошло исключение.");
             Console.WriteLine(e.Message);
-        }
+        }*/
     }
 
     private static async void AddBookAsync(int userId)
@@ -137,9 +150,9 @@ class Program
         }
 
         Book book = new(title, author, genres, publicationYear, annotation, isbn, userId);
-        await using(BookCatalog catalog = new(userId))
+        await using(BookContext context = new(userId))
         {
-            await catalog.AddBookAsync(book);
+            await context.AddBookAsync(book);
         }
     }
 }
