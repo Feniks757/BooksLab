@@ -38,21 +38,65 @@ public class BookController : ControllerBase
     {
         return await new BookSearch().SearchByTitleAsync(userId, title);
     }
-    
+
+    [HttpGet("searchby")]
+    public async Task<ActionResult<IEnumerable<Book>>> SearchBooks(int userId, string searchType, string searchQuery)
+    {
+        var books = new List<Book>();
+        switch (searchType)
+        {
+            case "title": 
+                books = await new BookSearch().SearchAsync(userId, searchQuery, (Book book) => book.Title);
+                break;
+            case "author": 
+                books =  await new BookSearch().SearchAsync(userId, searchQuery, (Book book) => book.Author);
+                break;
+            case "isbn": 
+                books = await new BookSearch().SearchAsync(userId, searchQuery, (Book book) => book.ISBN);
+                break;
+            case "keywords":
+                books =  await new KeywordSearch().SearchAsync(userId, searchQuery, (Book book) => "");
+                break;
+            default:
+                return BadRequest("Invalid search type.");
+        }
+        
+        return Ok(books);
+    }
+
     // POST api/bookcatalog
-    [HttpPost]
+    [HttpPost()]
     public async Task<ActionResult<Book>> Post(Book book)
     {
+        Console.WriteLine("post request");
         if (book == null)
         {
             return BadRequest();
         }
 
-        await using (BookContext db = new())
+        await using (BookContext db = new(0))
         {
             await db.Books.AddAsync(book);
             await db.SaveChangesAsync();
         }
+        return Ok(book);
+    }
+    
+    [HttpPost("addbook")]
+    public async Task<IActionResult> AddBook([FromBody] Book book)
+    {
+        Console.WriteLine("adding book");
+        if (book == null)
+        {
+            return BadRequest("Book data is invalid.");
+        }
+
+        await using (var db = new BookContext(0))
+        {
+            await db.Books.AddAsync(book);
+            await db.SaveChangesAsync();
+        }
+        
         return Ok(book);
     }
     /*// GET

@@ -1,5 +1,14 @@
-document.getElementById('fetchBooksButton').addEventListener('click', function() {
-    fetch('/api/book/getbooks')
+document.getElementById('searchButton').addEventListener('click', function() {
+    const userId = document.getElementById('userId').value;
+    const searchType = document.getElementById('searchType').value;
+    const searchQuery = document.getElementById('searchQuery').value;
+
+    if (!userId) {
+        alert('User ID is required.');
+        return;
+    }
+
+    fetch(`/api/book/searchby?userId=${userId}&searchType=${searchType}&searchQuery=${searchQuery}`)
         .then(response => response.json())
         .then(data => {
             const tbody = document.querySelector('#bookTable tbody');
@@ -26,5 +35,5 @@ document.getElementById('fetchBooksButton').addEventListener('click', function()
                 });
             }
         })
-        .catch(error => console.error('Error fetching books:', error));
+        .catch(error => console.error('Error searching books:', error));
 });

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BooksLab.ConsoleCommands;
 
-internal class KeywordSearch : IBookSearch
+public class KeywordSearch : IBookSearch
 {
     //private IBookSearch _bookSearchImplementation;
 
