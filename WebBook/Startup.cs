@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 using WebApiApp.Controllers;
 
 namespace BooksLab;
@@ -32,7 +33,12 @@ public class Startup
     public void Configure(IApplicationBuilder app)
     {
         app.UseDeveloperExceptionPage();
+        app.UseHttpsRedirection();
         
+        //app.UsePathBase("/index.html"); 
+        app.UseStaticFiles();
+        app.UseDefaultFiles(); // Это позволяет использовать index.html как файл по умолчанию
+
         app.UseRouting();
  
         app.UseEndpoints(endpoints =>

@@ -32,7 +32,7 @@ public class BookController : ControllerBase
     }
     //https://localhost:7242/api/book/Сталин
     
-    // GET api/bookcatalog/Мы
+    // GET api/book/title
     [HttpGet("{title}")]
     public async Task<ActionResult<IEnumerable<Book>>> Get(int userId, string title)
     {
