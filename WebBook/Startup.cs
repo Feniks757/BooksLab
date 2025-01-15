@@ -1,4 +1,5 @@
 using BooksLab.Books;
+using BooksLab.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -25,8 +26,11 @@ public class Startup
     {
         //string con = "Server=(localdb)\\mssqllocaldb;Database=usersdbstore;Trusted_Connection=True;";
         // устанавливаем контекст данных
-        services.AddDbContext<BookContext>();
         
+        
+        services.AddDbContextFactory<BookContext>();
+        
+        services.AddSingleton<BookController>();
         services.AddControllers(); // используем контроллеры без представлений
     }
  
