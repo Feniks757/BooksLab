@@ -12,23 +12,18 @@ namespace BooksLab.Controllers;
 [Route("/api/[controller]")] // /api/[controller]
 public class BookController : ControllerBase
 {
-    //private BookContext db;
+    private BookContext db;
     // /api/book/getbooks
 
     public BookController()
     {
-        //db = new BookContext();
+        db = new BookContext();
     }
 
     [HttpGet("getbooks")]
     public async Task<ActionResult<IEnumerable<Book>>> Get()
     {
-        int i = 0;
-        await using (BookContext db = new(1))
-        {
-            return await db.Books.ToListAsync();
-        }
-
+        return await db.Books.ToListAsync();
     }
     //https://localhost:7242/api/book/Сталин
     
@@ -36,26 +31,28 @@ public class BookController : ControllerBase
     [HttpGet("{title}")]
     public async Task<ActionResult<IEnumerable<Book>>> Get(int userId, string title)
     {
-        return await new BookSearch().SearchByTitleAsync(userId, title);
+        db.UserId = userId;
+        return await new BookSearch().SearchByTitleAsync(db, title);
     }
 
     [HttpGet("searchby")]
     public async Task<ActionResult<IEnumerable<Book>>> SearchBooks(int userId, string searchType, string searchQuery)
     {
+        db.UserId = userId;
         var books = new List<Book>();
         switch (searchType)
         {
             case "title": 
-                books = await new BookSearch().SearchAsync(userId, searchQuery, (Book book) => book.Title);
+                books = await new BookSearch().SearchAsync(db, searchQuery, (Book book) => book.Title);
                 break;
             case "author": 
-                books =  await new BookSearch().SearchAsync(userId, searchQuery, (Book book) => book.Author);
+                books =  await new BookSearch().SearchAsync(db, searchQuery, (Book book) => book.Author);
                 break;
             case "isbn": 
-                books = await new BookSearch().SearchAsync(userId, searchQuery, (Book book) => book.ISBN);
+                books = await new BookSearch().SearchAsync(db, searchQuery, (Book book) => book.ISBN);
                 break;
             case "keywords":
-                books =  await new KeywordSearch().SearchAsync(userId, searchQuery, (Book book) => "");
+                books =  await new KeywordSearch().SearchAsync(db, searchQuery, (Book book) => "");
                 break;
             default:
                 return BadRequest("Invalid search type.");
@@ -64,26 +61,8 @@ public class BookController : ControllerBase
         return Ok(books);
     }
 
-    // POST api/bookcatalog
-    [HttpPost()]
-    public async Task<ActionResult<Book>> Post(Book book)
-    {
-        Console.WriteLine("post request");
-        if (book == null)
-        {
-            return BadRequest();
-        }
-
-        await using (BookContext db = new(0))
-        {
-            await db.Books.AddAsync(book);
-            await db.SaveChangesAsync();
-        }
-        return Ok(book);
-    }
-    
     [HttpPost("addbook")]
-    public async Task<IActionResult> AddBook([FromBody] Book book)
+    public async Task<IActionResult> AddBook([FromBody] Book book, [FromQuery] int userId)
     {
         Console.WriteLine("adding book");
         if (book == null)
@@ -91,17 +70,10 @@ public class BookController : ControllerBase
             return BadRequest("Book data is invalid.");
         }
 
-        await using (var db = new BookContext(0))
-        {
-            await db.Books.AddAsync(book);
-            await db.SaveChangesAsync();
-        }
-        
+        book.UserId = userId;
+        db.UserId = userId;
+        await db.AddBookAsync(book);
+
         return Ok(book);
     }
-    /*// GET
-    public IActionResult Index()
-    {
-        return View();
-    }*/
 }

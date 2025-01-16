@@ -4,7 +4,7 @@ using BooksLab.Books;
 
 public interface IBookSearch
 {
-     public Task<List<Book>> SearchAsync(int userId, string query, Func<Book, string> field);
+     public Task<List<Book>> SearchAsync(BookContext context, string query, Func<Book, string> field);
      
 }
 /*

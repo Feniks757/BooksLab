@@ -9,8 +9,7 @@ document.getElementById('addBookForm').addEventListener('submit', function(event
         genres: formData.get('genres').split(',').map(genre => genre.trim()),
         publicationYear: parseInt(formData.get('publicationYear')),
         annotation: formData.get('annotation'),
-        isbn: formData.get('isbn'),
-        userId: parseInt(userId)
+        isbn: formData.get('isbn')
     };
 
     let isValid = true;
@@ -96,7 +95,7 @@ document.getElementById('addBookForm').addEventListener('submit', function(event
     }
 
     if (isValid) {
-        fetch('/api/book/addbook', {
+        fetch(`/api/book/addbook?userId=${userId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

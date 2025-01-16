@@ -12,36 +12,33 @@ namespace BooksLab.ConsoleCommands
     {
         private IBookSearch _bookSearchImplementation;
 
-        public async Task<List<Book>> SearchAsync(int userId, string query, Func<Book, string> field)
+        public async Task<List<Book>> SearchAsync(BookContext context, string query, Func<Book, string> field)
         {
-            await using (BookContext context = new(userId))
-            {
-                return context.Books.AsEnumerable().Where(book => field(book).ToLower().Contains(query.ToLower())).ToList();
-            }
+            return context.Books.AsEnumerable().Where(book => field(book).ToLower().Contains(query.ToLower())).ToList();
         }
 
-        public async Task<List<Book>> SearchByTitleAsync(int userId, string query)
+        public async Task<List<Book>> SearchByTitleAsync(BookContext context, string query)
         {
-            return await SearchAsync(userId, query, book => book.Title);
+            return await SearchAsync(context, query, book => book.Title);
         }
 
-        public async Task<List<Book>> SearchByISBNAsync(int userId, string query)
+        public async Task<List<Book>> SearchByISBNAsync(BookContext context, string query)
         {
-            return await SearchAsync(userId, query, book => book.ISBN);
+            return await SearchAsync(context, query, book => book.ISBN);
         }
 
-        public async Task<List<Book>> SearchByAuthorAsync(int userId, string query)
+        public async Task<List<Book>> SearchByAuthorAsync(BookContext context, string query)
         {
-            return await SearchAsync(userId, query, book => book.Author);
+            return await SearchAsync(context, query, book => book.Author);
         }
 
-        public async Task<List<Book>> SearchBooksAsync(int userId, string query, string searchType)
+        public async Task<List<Book>> SearchBooksAsync(BookContext context, string query, string searchType)
         { 
             return searchType.ToLower() switch
             {
-                "title" => await SearchByTitleAsync(userId, query),
-                "isbn" => await SearchByISBNAsync(userId, query),
-                "author" => await SearchByAuthorAsync(userId, query),
+                "title" => await SearchByTitleAsync(context, query),
+                "isbn" => await SearchByISBNAsync(context, query),
+                "author" => await SearchByAuthorAsync(context, query),
                 _ => throw new ArgumentException("Invalid search type")
             };
         }

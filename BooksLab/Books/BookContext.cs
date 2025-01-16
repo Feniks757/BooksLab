@@ -9,7 +9,7 @@ using BooksLab.Interface;
 
 public class BookContext : DbContext
 {
-    public int UserId { get; }
+    public int UserId { get; set; }
 
     private bool CurrentUser { get; }
 
@@ -50,7 +50,8 @@ public class BookContext : DbContext
     //Ассинхронное добавление книги в БД
     public async Task<Book> AddBookAsync(Book book)
     {
-        await Books.AddAsync(book); 
+        await Books.AddAsync(book);
+        await SaveChangesAsync();
         Console.WriteLine("Книга добавлена в каталог!");
         return book;
     }
