@@ -7,72 +7,79 @@ using Pomelo.EntityFrameworkCore.MySql.Query.ExpressionVisitors.Internal;
 using SQLitePCL;
 
 namespace BooksLab.Controllers;
-
+/*
+ *   Контроллер. Предназначен преимущественно для обработки запросов протокола HTTP:
+ *  Get, Post, Put, Delete, Patch, Head, Options
+ */
 [ApiController]
-[Route("/api/[controller]")] // /api/[controller]
+/*
+ * запросы к данному контроллеру через
+ * /api/book
+ */
+[Route("/api/[controller]")] 
 public class BookController : ControllerBase
 {
-    private BookContext db;
-    // /api/book/getbooks
-
+    private BookContext _db;
+    
     public BookController()
     {
-        db = new BookContext();
+        _db = new BookContext();
     }
-
+    
+    // GET запрос /api/bool/getbooks
     [HttpGet("getbooks")]
     public async Task<ActionResult<IEnumerable<Book>>> Get()
     {
-        return await db.Books.ToListAsync();
-    }
-    //https://localhost:7242/api/book/Сталин
-    
-    // GET api/book/title
-    [HttpGet("{title}")]
-    public async Task<ActionResult<IEnumerable<Book>>> Get(int userId, string title)
-    {
-        db.UserId = userId;
-        return await new BookSearch().SearchByTitleAsync(db, title);
+        return await _db.Books.ToListAsync();
     }
 
+    // GET запрос api/book/searchby?userId=${userId}&searchType=${searchType}&searchQuery=${searchQuery}
     [HttpGet("searchby")]
     public async Task<ActionResult<IEnumerable<Book>>> SearchBooks(int userId, string searchType, string searchQuery)
     {
-        db.UserId = userId;
+        _db.UserId = userId;
         var books = new List<Book>();
         switch (searchType)
         {
             case "title": 
-                books = await new BookSearch().SearchAsync(db, searchQuery, (Book book) => book.Title);
+                books = await new BookSearch().SearchAsync(_db, searchQuery, (Book book) => book.Title);
                 break;
             case "author": 
-                books =  await new BookSearch().SearchAsync(db, searchQuery, (Book book) => book.Author);
+                books =  await new BookSearch().SearchAsync(_db, searchQuery, (Book book) => book.Author);
                 break;
             case "isbn": 
-                books = await new BookSearch().SearchAsync(db, searchQuery, (Book book) => book.ISBN);
+                books = await new BookSearch().SearchAsync(_db, searchQuery, (Book book) => book.ISBN);
                 break;
             case "keywords":
-                books =  await new KeywordSearch().SearchAsync(db, searchQuery, (Book book) => "");
+                books =  await new KeywordSearch().SearchAsync(_db, searchQuery, (Book book) => "");
                 break;
             default:
                 return BadRequest("Invalid search type.");
         }
-        
         return Ok(books);
     }
-
+    
+    /*
+     *  POST запрос
+     *  fetch(`/api/book/addbook?userId=${userId}`, {
+     *       method: 'POST',
+     *       headers: {
+     *           'Content-Type': 'application/json'
+     *       },
+     *       body: JSON.stringify(book)
+     *   }
+     */
     [HttpPost("addbook")]
     public async Task<IActionResult> AddBook([FromBody] Book book, [FromQuery] int userId)
     {
-        Console.WriteLine("adding book");
+        Console.WriteLine("Adding book");
         if (book == null)
         {
             return BadRequest("Book data is invalid.");
         }
 
         book.UserId = userId;
-        db.UserId = userId;
-        await db.AddBookAsync(book);
+        await _db.AddBookAsync(book);
 
         return Ok(book);
     }

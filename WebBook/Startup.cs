@@ -22,27 +22,33 @@ public class Startup
     }
     public IConfiguration Configuration { get; }
     
+    //функция настройки сервисов. Здесь подключаются 
     public void ConfigureServices(IServiceCollection services)
     {
-        //string con = "Server=(localdb)\\mssqllocaldb;Database=usersdbstore;Trusted_Connection=True;";
-        // устанавливаем контекст данных
-        
-        
+        // Регистрация фабрики контекста базы данных
         services.AddDbContextFactory<BookContext>();
         
+        // Регистрация контроллера как синглтона
         services.AddSingleton<BookController>();
-        services.AddControllers(); // используем контроллеры без представлений
+        
+        // Регистрация всех контроллеров
+        services.AddControllers();
     }
  
     public void Configure(IApplicationBuilder app)
     {
+        //режим разработчика
         app.UseDeveloperExceptionPage();
+        
+        // делает http -> https
         app.UseHttpsRedirection();
         
-        //app.UsePathBase("/index.html"); 
-        app.UseStaticFiles();
-        app.UseDefaultFiles(); // Это позволяет использовать index.html как файл по умолчанию
+        //смотрит файлы для веб страничек в wwwroot
+        app.UseStaticFiles(); 
+        // Это позволяет использовать index.html как файл по умолчанию
+        app.UseDefaultFiles(); 
 
+        //определяет какой контроллер и действие будут обрабатывать запрос на основе URL
         app.UseRouting();
  
         app.UseEndpoints(endpoints =>

@@ -15,6 +15,7 @@ document.getElementById('addBookForm').addEventListener('submit', function(event
     let isValid = true;
 
     // Валидация полей
+    // 'valid' 'invalid' подсвечивают невалидные поля 
     if (!validateBookTitle(book.title)) {
         document.getElementById('title').classList.add('invalid');
         document.getElementById('title').classList.remove('valid');

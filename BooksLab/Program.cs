@@ -1,12 +1,5 @@
-﻿using BooksLab.Output;
-using BooksLab.Functions;
+﻿using BooksLab.Functions;
 using BooksLab.Books;
-using BooksLab.ConsoleCommands;
-using BooksLab.Interface;
-using BooksLab.Storage;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-
 
 namespace BooksLab;
 
@@ -14,16 +7,8 @@ class Program
 {
     public static void Main(string[] args)
     {
-       
-        /*var builder = WebApplication.CreateBuilder(args);
-        Startup startup = new Startup(builder.Configuration);
-        startup.ConfigureServices(builder.Services);
-        var app = builder.Build();
-        startup.Configure(app);
         
-        app.Run();*/
-        /*
-        try
+        /*try
         {
             Console.WriteLine("Введите ваш идентификатор пользователя: ");
             int userId;
