@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Query.ExpressionVisitors.Internal;
 using SQLitePCL;
 
-namespace BooksLab.Controllers;
+namespace WebBook.Controllers;
 /*
  *   Контроллер. Предназначен преимущественно для обработки запросов протокола HTTP:
  *  Get, Post, Put, Delete, Patch, Head, Options
@@ -19,11 +19,11 @@ namespace BooksLab.Controllers;
 [Route("/api/[controller]")] 
 public class BookController : ControllerBase
 {
-    private BookContext _db;
+    private readonly BookContext _db;
     
-    public BookController()
+    public BookController(BookContext context)
     {
-        _db = new BookContext();
+        _db = context;
     }
     
     // GET запрос /api/bool/getbooks

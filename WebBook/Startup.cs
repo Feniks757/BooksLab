@@ -1,18 +1,7 @@
 using BooksLab.Books;
-using BooksLab.Controllers;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileProviders;
-using WebApiApp.Controllers;
 
-namespace BooksLab;
+namespace WebBook;
 
 public class Startup
 {
@@ -25,13 +14,11 @@ public class Startup
     //функция настройки сервисов. Здесь подключаются 
     public void ConfigureServices(IServiceCollection services)
     {
-        // Регистрация фабрики контекста базы данных
-        services.AddDbContextFactory<BookContext>();
         
-        // Регистрация контроллера как синглтона
-        services.AddSingleton<BookController>();
-        
-        // Регистрация всех контроллеров
+        string con = "server=localhost;user=user;password=password;database=books;";
+        var version = new MySqlServerVersion(new Version(8, 0, 11));
+        services.AddDbContextFactory<BookContext>(options => options.UseMySql(con, version));
+
         services.AddControllers();
     }
  

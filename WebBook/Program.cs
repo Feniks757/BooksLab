@@ -1,11 +1,14 @@
 using BooksLab;
 
-//запуск 
-Host.CreateDefaultBuilder()
-    .ConfigureWebHostDefaults(webBuilder =>
+namespace WebBook;
+class Program
+{
+    public static void Main(string[] args)
     {
-        webBuilder.UseStartup<Startup>();
-    })
-    .Build()
-    .Run();
+        Host.CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
+            .Build()
+            .Run();
+    }
+}
     
