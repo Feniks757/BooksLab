@@ -15,7 +15,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         
-        string con = "server=localhost;user=user;password=password;database=books;";
+        string con = "server=localhost;user=root;password=password;database=books;";
         var version = new MySqlServerVersion(new Version(8, 0, 11));
         services.AddDbContextFactory<BookContext>(options => options.UseMySql(con, version));
 
