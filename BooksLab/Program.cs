@@ -80,7 +80,7 @@ class Program
             Console.WriteLine(e.Message);
         }*/
     }
-
+    /*
     private static async void AddBookAsync(int userId)
     {
 
@@ -137,5 +137,5 @@ class Program
         {
             await context.AddBookAsync(book);
         }
-    }
+    }*/
 }

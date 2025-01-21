@@ -12,44 +12,22 @@ public class BookContext : DbContext
 
     private bool CurrentUser { get; }
     
-    private readonly Action<DbContextOptionsBuilder> _configureOptions;
+    private readonly DbContextOptions<BookContext> _configureOptions;
 
     //Set через который происходит взаимодействие с БД
     public DbSet<Book> Books => Set<Book>();
 
-    public BookContext() => Database.EnsureCreated();
 
-    public BookContext(DbContextOptions<BookContext> options) : base(options)
-    {
-        Database.EnsureCreated();
-    }
-    
-    public BookContext(Action<DbContextOptionsBuilder> configureOptions)
+    public BookContext(DbContextOptions<BookContext> configureOptions) : base(configureOptions)
     {
         _configureOptions = configureOptions;
-    }
-
-    public BookContext(int id) : this(id, true) =>  Database.EnsureCreated();
-
-    public BookContext(int id, bool currentUser)
-    {
         Database.EnsureCreated();
-        UserId = id;
-        CurrentUser = currentUser;
     }
 
     //настройка Базы данных
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //MYSQL
-        if (_configureOptions != null)
-        {
-            _configureOptions(optionsBuilder);
-        }
-        else
-        {
-            base.OnConfiguring(optionsBuilder);
-        }
         //base.OnConfiguring(optionsBuilder);
         /*optionsBuilder.UseMySql(
             "server=localhost;user=user;password=password;database=books;", 
