@@ -1,0 +1,115 @@
+﻿<Window x:Class="BookApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BookApp"
+        xmlns:vm="clr-namespace:BookApp"
+        mc:Ignorable="d"
+        Title="Book List" WindowState="Maximized">
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <Style x:Key="TextWrappingStyle" TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+        <Style x:Key="NoResultsMessageStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="Red"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding NoResultsMessage}" Value="">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding NoResultsMessage}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Book List" FontSize="24" Margin="10"/>
+
+        <StackPanel Grid.Row="1" Margin="400,10,10,10" Orientation="Horizontal">
+            <TextBlock Text="User ID:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding UserId, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+        </StackPanel>
+
+        <GroupBox Grid.Row="2" Header="Добавить книгу" Margin="10">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Название:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Автор:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Жанры (через запятую):" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Genres, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Год публикации:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding PublicationYear, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Аннотация:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Annotation, UpdateSourceTrigger=PropertyChanged}" Width="200" Height="100" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="ISBN:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding ISBN, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                </StackPanel>
+
+                <Button Content="Добавить" Width="100" Margin="0,10,0,0" HorizontalAlignment="Left" Command="{Binding AddBookCommand}"/>
+            </StackPanel>
+        </GroupBox>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="400,10,10,10">
+            <TextBlock Text="Поиск по:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <ComboBox SelectedIndex="{Binding SelectedSearchType, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="10,0,0,0">
+                <ComboBoxItem Content="Названию"/>
+                <ComboBoxItem Content="Автору"/>
+                <ComboBoxItem Content="ISBN"/>
+                <ComboBoxItem Content="Ключевым словам"/>
+            </ComboBox>
+            <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="10,0,0,0"/>
+            <Button Content="Найти" Width="100" Margin="10,0,0,0" Command="{Binding SearchCommand}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="10" HorizontalAlignment="Right">
+            <Button Content="Fetch Books" Width="100" Margin="10,0,0,0" Command="{Binding FetchBooksCommand}"/>
+        </StackPanel>
+
+        <TextBlock Text="{Binding NoResultsMessage}" Style="{StaticResource NoResultsMessageStyle}" Grid.Row="5" Margin="10"/>
+
+        <DataGrid Grid.Row="5" ItemsSource="{Binding Books}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="Auto"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="Auto" ElementStyle="{StaticResource TextWrappingStyle}"/>
+                <DataGridTextColumn Header="Author" Binding="{Binding Author}" Width="Auto"/>
+                <DataGridTextColumn Header="Genres" Binding="{Binding GenresString}" Width="Auto"/>
+                <DataGridTextColumn Header="Publication Year" Binding="{Binding PublicationYear}" Width="Auto"/>
+                <DataGridTextColumn Header="Annotation" Binding="{Binding Annotation}" Width="*" ElementStyle="{StaticResource TextWrappingStyle}"/>
+                <DataGridTextColumn Header="ISBN" Binding="{Binding ISBN}" Width="Auto" MinWidth="150"/>
+                <DataGridTextColumn Header="UserId" Binding="{Binding UserId}" Width="Auto"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

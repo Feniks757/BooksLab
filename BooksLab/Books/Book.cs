@@ -47,6 +47,11 @@ public class Book
                PublicationYear == book.PublicationYear &&
                ISBN == book.ISBN;
     }
+    
+    public string GenresString
+    {
+        get { return string.Join(", ", Genres); }
+    }
 
     public override int GetHashCode()
     {

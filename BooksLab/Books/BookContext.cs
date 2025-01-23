@@ -17,6 +17,10 @@ public class BookContext : DbContext
     //Set через который происходит взаимодействие с БД
     public DbSet<Book> Books => Set<Book>();
 
+    public BookContext()
+    {
+        Database.EnsureCreated();
+    }
 
     public BookContext(DbContextOptions<BookContext> configureOptions) : base(configureOptions)
     {
@@ -29,10 +33,10 @@ public class BookContext : DbContext
     {
         //MYSQL
         //base.OnConfiguring(optionsBuilder);
-        /*optionsBuilder.UseMySql(
+        optionsBuilder.UseMySql(
             "server=localhost;user=user;password=password;database=books;", 
             new MySqlServerVersion(new Version(8, 0, 11))
-        );*/
+        );
         //SQLite
         //optionsBuilder.UseSqlite("Data Source=book.db");
     }
@@ -52,5 +56,11 @@ public class BookContext : DbContext
         await SaveChangesAsync();
         Console.WriteLine("Книга добавлена в каталог!");
         return book;
+    }
+    
+    // Метод для получения всех книг из базы данных
+    public async Task<List<Book>> GetAllBooksAsync()
+    {
+        return await Books.ToListAsync();  
     }
 }

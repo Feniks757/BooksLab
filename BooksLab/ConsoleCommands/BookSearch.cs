@@ -31,6 +31,21 @@ namespace BooksLab.ConsoleCommands
         {
             return await SearchAsync(context, query, book => book.Author);
         }
+        
+        public async Task<List<Book>>  SearchByKeywords(BookContext context, string query)
+        {
+            string[] keywords = query.Split(',')
+                .Select(keyword => keyword.Trim().ToLower())
+                .ToArray();
+            List<Book> books;
+        
+            return context.Books
+                .AsEnumerable() //??
+                .Where(book =>
+                    keywords.Any(keyword => book.Annotation.Contains(keyword) ||
+                                            book.Genres.Any(genre => genre.ToLower().Contains(keyword))))
+                .ToList();
+        }
 
         public async Task<List<Book>> SearchBooksAsync(BookContext context, string query, string searchType)
         { 
