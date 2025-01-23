@@ -11,10 +11,12 @@
         <vm:MainWindowViewModel />
     </Window.DataContext>
     <Window.Resources>
+        <!-- Перенос строки -->
         <Style x:Key="TextWrappingStyle" TargetType="TextBlock">
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
         </Style>
+        <!-- Окно ошибки -->
         <Style x:Key="NoResultsMessageStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="Red"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -25,6 +27,30 @@
                 <DataTrigger Binding="{Binding NoResultsMessage}" Value="{x:Null}">
                     <Setter Property="Visibility" Value="Collapsed"/>
                 </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <!-- Сообщение об ошибке -->
+        <Style x:Key="ValidationErrorStyle" TargetType="Control">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock DockPanel.Dock="Right"
+                                       Foreground="Red"
+                                       FontSize="12"
+                                       Text="{Binding ElementName=adornerPlaceholder,
+                                       Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"/>
+                            <AdornedElementPlaceholder Name="adornerPlaceholder"/>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self},
+                            Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
     </Window.Resources>
@@ -42,39 +68,39 @@
 
         <StackPanel Grid.Row="1" Margin="400,10,10,10" Orientation="Horizontal">
             <TextBlock Text="User ID:" Margin="0,0,10,0" VerticalAlignment="Center"/>
-            <TextBox Text="{Binding UserId, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+            <TextBox Text="{Binding UserId, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Width="200" Style="{StaticResource ValidationErrorStyle}"/>
         </StackPanel>
 
         <GroupBox Grid.Row="2" Header="Добавить книгу" Margin="10">
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <TextBlock Text="Название:" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                    <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Width="200" Style="{StaticResource ValidationErrorStyle}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <TextBlock Text="Автор:" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                    <TextBox Text="{Binding Author, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Width="200" Style="{StaticResource ValidationErrorStyle}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <TextBlock Text="Жанры (через запятую):" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding Genres, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                    <TextBox Text="{Binding Genres, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Width="200" Style="{StaticResource ValidationErrorStyle}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <TextBlock Text="Год публикации:" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding PublicationYear, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                    <TextBox Text="{Binding PublicationYear, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Width="200" Style="{StaticResource ValidationErrorStyle}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <TextBlock Text="Аннотация:" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding Annotation, UpdateSourceTrigger=PropertyChanged}" Width="200" Height="100" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top"/>
+                    <TextBox Text="{Binding Annotation, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Width="200" Height="100" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" Style="{StaticResource ValidationErrorStyle}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <TextBlock Text="ISBN:" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding ISBN, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                    <TextBox Text="{Binding ISBN, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Width="200" Style="{StaticResource ValidationErrorStyle}"/>
                 </StackPanel>
 
                 <Button Content="Добавить" Width="100" Margin="0,10,0,0" HorizontalAlignment="Left" Command="{Binding AddBookCommand}"/>
